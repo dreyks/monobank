@@ -8,10 +8,11 @@ module Monobank
       end
 
       def call
-        attributes = response
-        return define_resources(attributes) if attributes.code == 200
+        http_response = response
+        attributes = http_response.parsed_response
+        return define_resources(attributes) if http_response.code == 200
 
-        Monobank::Resources::Error.new(attributes.merge('code' => attributes.code))
+        Monobank::Resources::Error.new(attributes.merge('code' => http_response.code))
       end
 
       private
