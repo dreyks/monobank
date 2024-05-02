@@ -8,27 +8,24 @@ module Monobank
       end
 
       def initialize(attributes)
-        @attributes = {}
-        snake_case_attributes = deep_snake_case(attributes)
-        snake_case_attributes.each { |key, value| @attributes[method_name(key)] = value }
+        @attributes = deep_snake_case(attributes)
       end
 
       def method_name(key)
         key.gsub(/(.)([A-Z])/,'\1_\2').downcase
       end
 
-      def deep_snake_case(hash)
-        return hash unless hash.is_a?(Array) || hash.is_a?(Hash)
-
-        hash.each_with_object({}) do |(key, value), object|
-          object[method_name(key)] =
-            if value.is_a? Hash
-              deep_snake_case(value)
-            elsif value.is_a? Array
-              value.map { |element| deep_snake_case(element) }
-            else
-              value
-            end
+      def deep_snake_case(object)
+        if object.is_a?(Hash)
+          object.map do |key, value|
+            [method_name(key), deep_snake_case(value)]
+          end.to_h
+        elsif object.is_a?(Array)
+          object.map do |value|
+            deep_snake_case(value)
+          end
+        else
+          object
         end
       end
 
