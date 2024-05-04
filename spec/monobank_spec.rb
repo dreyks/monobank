@@ -72,6 +72,7 @@ describe Monobank do
       result = Monobank.client_info(token:)
       expect(result.name).to eq 'Мазепа Іван'
       expect(result.accounts.length).to eq 1
+      expect(result.accounts.first.type).to eq 'black'
       expect(result.accounts.first.currency_code).to eq 980
       expect(result.attributes).to match hash_including(
         'accounts' => array_including([
